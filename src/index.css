@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cấu hình mặc định cho toàn bộ Website */
+@layer base {
+  body {
+    @apply bg-netflix-dark text-white font-sans;
+    /* bg-netflix-dark: Lấy màu đen xám chúng ta vừa khai báo */
+    /* text-white: Mặc định chữ màu trắng */
+  }
+}
+
+/* Tùy chỉnh thanh cuộn (Scrollbar) cho giống Netflix */
+/* Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px; /* Chiều cao cho thanh cuộn ngang */
+}
+
+::-webkit-scrollbar-track {
+  background: #141414; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E50914; /* Hover vào thanh cuộn thì hiện màu đỏ */
+}
+
+/* Ẩn thanh cuộn nhưng vẫn cuộn được (Dùng cho các list phim nằm ngang) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
