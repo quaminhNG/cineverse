@@ -11,13 +11,13 @@ const MobileMenu = ({ onClose }) => {
               className="w-10 h-10 rounded"
             />
             <div className="flex flex-col">
-              <span className="text-white font-semibold text-sm group-hover:text-red-600 transition">
-                User Netflix
+              <span className="text-white font-semibold text-sm group-hover:text-cineverse-cyan transition">
+                User
               </span>
               <span className="text-gray-400 text-xs">Switch Profiles</span>
             </div>
           </div>
-          <button onClick={onClose} className="text-white hover:text-red-600 transition duration-300">
+          <button onClick={onClose} className="text-white hover:text-cineverse-cyan transition duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -38,28 +38,34 @@ const MobileMenu = ({ onClose }) => {
 
       <div className="px-6 space-y-6">
         <a
-          className="block text-md font-medium text-white hover:text-red-600 transition transform hover:scale-105"
+          className="block text-md text-white transition transform duration-500 ease-out hover:text-cineverse-cyan hover:scale-110"
           href="#"
         >
           Home
         </a>
         <a
-          className="block text-md font-medium text-white hover:text-red-600 transition transform hover:scale-105"
+          className="block text-md text-white transition transform duration-500 ease-out hover:text-cineverse-cyan hover:scale-110"
+          href="#"
+        >
+          Tv Shows
+        </a>
+        <a
+          className="block text-md text-white transition transform duration-500 ease-out hover:text-cineverse-cyan hover:scale-110"
           href="#"
         >
           Movies
         </a>
         <a
-          className="block text-md font-medium text-white hover:text-red-600 transition transform hover:scale-105"
+          className="block text-md text-white transition transform duration-500 ease-out hover:text-cineverse-cyan hover:scale-110"
           href="#"
         >
-          Series
+          New & Popular
         </a>
         <a
-          className="block text-md font-medium text-white hover:text-red-600 transition transform hover:scale-105"
+          className="block text-md text-white transition transform duration-500 ease-out hover:text-cineverse-cyan hover:scale-110"
           href="#"
         >
-          Watch List
+          My Lists
         </a>
       </div>
     </div>

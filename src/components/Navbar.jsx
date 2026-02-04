@@ -1,45 +1,20 @@
 import useScrollY from "../hooks/useScrollY";
+import NavbarMenu from "./NavbarMenu";
+
 const Navbar = ({ isOpen, setIsOpen }) => {
   const scrolled = useScrollY();
   return (
-    <nav className={`fixed top-0 w-full z-50 flex items-center justify-between px-12 h-16 transition-all duration-300 ${scrolled || isOpen ? "bg-transparent" : "bg-black"}`}>
+    <nav className={`fixed top-0 w-full z-50 flex items-center justify-between px-8 md:px-16 h-20 transition-all duration-300 ${scrolled || isOpen ? "bg-transparent" : "bg-black/60"}`}>
       {/* left*/}
       <div className="flex items-center gap-12">
         <div className="cursor-pointer">
-          <img
-            src="/src/assets/images/netflix_PNG25.png"
-            className="w-28"
-            alt="Logo"
-          />
+          <h1 className={`text-2xl md:text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-cineverse-gradient transition-all duration-300 ${scrolled ? "brightness-125 drop-shadow-[0_0_10px_rgba(143,239,255,0.5)]" : "hover:brightness-125 hover:drop-shadow-[0_0_10px_rgba(143,239,255,0.5)]"}`}>
+            CINEVERSE
+          </h1>
         </div>
 
         {/* center */}
-        <div className="hidden md:flex justify-center gap-6 text-white">
-          <a
-            className="text-md font-medium transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
-            href=""
-          >
-            Home
-          </a>
-          <a
-            className="text-md font-medium transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
-            href=""
-          >
-            Movies
-          </a>
-          <a
-            className="text-md font-medium transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
-            href=""
-          >
-            Series
-          </a>
-          <a
-            className="text-md font-medium transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
-            href=""
-          >
-            Watch List
-          </a>
-        </div>
+        <NavbarMenu />
       </div>
 
       {/* right */}
@@ -51,7 +26,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 cursor-pointer transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
+            className="w-8 h-8 cursor-pointer transition transform duration-300 ease-out hover:text-cineverse-cyan hover:scale-110"
           >
             <path
               strokeLinecap="round"
@@ -66,7 +41,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 cursor-pointer transition transform duration-500 ease-out hover:text-red-600 hover:scale-110"
+            className="w-8 h-8 cursor-pointer transition transform duration-300 ease-out hover:text-cineverse-cyan hover:scale-110"
           >
             <path
               strokeLinecap="round"
@@ -87,7 +62,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6 ml-1 transition duration-400 group-hover:rotate-180 group-hover:text-red-600 text-white"
+              className="w-8 h-8 ml-1 transition duration-400 group-hover:rotate-180 group-hover:text-cineverse-cyan text-white"
             >
               <path
                 strokeLinecap="round"
@@ -105,9 +80,9 @@ const Navbar = ({ isOpen, setIsOpen }) => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 stroke="currentColor"
-                className="w-8 h-8 cursor-pointer text-white hover:text-red-600 transition duration-300"
+                className="w-8 h-8 cursor-pointer text-white hover:text-cineverse-cyan transition duration-300"
               >
                 <path
                   strokeLinecap="round"
@@ -120,9 +95,9 @@ const Navbar = ({ isOpen, setIsOpen }) => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 stroke="currentColor"
-                className="w-8 h-8 cursor-pointer text-white hover:text-red-600 transition duration-300"
+                className="w-8 h-8 cursor-pointer text-white hover:text-cineverse-cyan transition duration-300"
               >
                 <path
                   strokeLinecap="round"
