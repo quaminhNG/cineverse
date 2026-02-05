@@ -1,15 +1,11 @@
-const MovieCard = ({
-  image = "/src/assets/images/hero-banner.png",
-  title = "Movie Title",
-  genre = "Action",
-  year = "2024"
-}) => {
+const MovieCard = ({ image, title }) => {
   return (
     <div className="relative w-full h-full rounded-none overflow-hidden group cursor-pointer shadow-lg">
       <img
         src={image}
         alt={title}
         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        loading="lazy"
       />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80" />
@@ -27,11 +23,6 @@ const MovieCard = ({
           <h3 className="text-base md:text-lg font-bold leading-tight tracking-wide truncate">
             {title}
           </h3>
-          <p className="text-[10px] md:text-xs font-medium text-gray-300 flex items-center gap-2 truncate">
-            <span>{year}</span>
-            <span className="w-1 h-1 bg-gray-500 rounded-full" />
-            <span>{genre}</span>
-          </p>
         </div>
       </div>
     </div>

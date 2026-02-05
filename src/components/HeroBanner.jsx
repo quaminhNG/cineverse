@@ -3,9 +3,11 @@ import ContinueWatchingRow from "./ContinueWatchingRow";
 import axios from "../services/tmdb";
 import requests from "../services/requests";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeroBanner = () => {
   const [movie, setMovie] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -23,10 +25,11 @@ const HeroBanner = () => {
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
+  const hasWatched = false;
 
   return (
     <div
-      className="relative w-full h-[700px] md:h-[800px] bg-cover bg-center overflow-hidden"
+      className={`relative w-full ${hasWatched ? "h-[700px] md:h-[800px]" : "h-[500px] md:h-[600px]"} bg-cover bg-center overflow-hidden transition-all duration-500`}
       style={{
         backgroundImage: `url("https://image.tmdb.org/t/p/original/${movie?.backdrop_path}")`,
         backgroundPosition: "center center",
@@ -34,7 +37,7 @@ const HeroBanner = () => {
     >
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent" />
 
-      <div className="absolute inset-0 flex items-start pt-32 px-8 md:px-16 pb-60">
+      <div className={`absolute inset-0 flex items-start pt-32 px-8 md:px-16 ${hasWatched ? "pb-60" : "pb-20"}`}>
         <div className="w-full md:w-1/2">
           <div className="flex flex-col gap-6 text-white py-8">
             <h1 className="text-4xl md:text-6xl font-extrabold pb-2">
@@ -59,6 +62,7 @@ const HeroBanner = () => {
 
             <div className="flex items-center gap-6">
               <button
+                onClick={() => navigate('/watch')}
                 className="
                 px-6 py-3
                 rounded-md
@@ -103,7 +107,7 @@ const HeroBanner = () => {
         </div>
       </div>
 
-      <ContinueWatchingRow />
+      {hasWatched && <ContinueWatchingRow />}
       {/* Bottom fade */}
       <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent" />
     </div>

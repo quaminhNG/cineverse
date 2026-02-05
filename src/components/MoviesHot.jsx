@@ -1,7 +1,24 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios, { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import requests from "../services/requests";
 import useInfiniteScroll from "../hooks/useInfiniteScroll";
 
 const MoviesHot = () => {
-    const movies = [...Array(7)];
+    const navigate = useNavigate();
+    const [movies, setMovies] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const request = await axios.get(requests.fetchTrending);
+                setMovies(request.data.results);
+            } catch (error) {
+                console.error("Error fetching hot movies:", error);
+            }
+        }
+        fetchData();
+    }, []);
 
     const {
         containerRef,
@@ -15,6 +32,8 @@ const MoviesHot = () => {
         bufferSets: 5
     });
 
+    if (movies.length === 0) return null;
+
     return (
         <div className="flex flex-col gap-4 w-full">
             <h2 className="text-white text-xl md:text-2xl font-semibold mb-2 text-left">
@@ -26,6 +45,8 @@ const MoviesHot = () => {
                 onScroll={handleScroll}
             >
                 {[...Array(totalItems)].map((_, index) => {
+                    const movie = movies[index % movies.length];
+                    if (!movie) return null;
                     const distance = Math.abs(index - activeIndex);
 
                     let scaleClass = "scale-100 opacity-50";
@@ -37,8 +58,12 @@ const MoviesHot = () => {
                         <div
                             key={index}
                             onClick={() => {
-                                setActiveIndex(index);
-                                scrollToIndex(index);
+                                if (index === activeIndex) {
+                                    navigate('/watch');
+                                } else {
+                                    setActiveIndex(index);
+                                    scrollToIndex(index);
+                                }
                             }}
                             className={`
                 relative group
@@ -51,8 +76,8 @@ const MoviesHot = () => {
               `}
                         >
                             <img
-                                src="/src/assets/images/hero-banner.png"
-                                alt={`Movie ${(index % movies.length) + 1}`}
+                                src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
+                                alt={movie.title || movie.name}
                                 className="w-full aspect-[2/3] object-cover rounded-md"
                             />
                             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent opacity-60 rounded-md pointer-events-none" />
