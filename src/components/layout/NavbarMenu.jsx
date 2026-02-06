@@ -1,6 +1,6 @@
 const NavbarMenu = () => {
     return (
-        <div className="hidden md:flex justify-center gap-8 text-gray-300">
+        <div className="hidden nav-lg:flex justify-center gap-8 text-gray-300">
             <a
                 className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
                 href="#"

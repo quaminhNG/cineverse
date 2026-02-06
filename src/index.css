@@ -2,21 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cấu hình mặc định cho toàn bộ Website */
 @layer base {
   body {
     @apply bg-cineverse-dark text-white font-sans;
-    /* bg-cineverse-dark: Lấy màu đen xám chúng ta vừa khai báo */
-    /* text-white: Mặc định chữ màu trắng */
   }
 }
 
-/* Tùy chỉnh thanh cuộn (Scrollbar) cho giống Netflix */
-/* Webkit (Chrome, Edge, Safari) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes gradient-xy {
+
+  0%,
+  100% {
+    background-size: 400% 400%;
+    background-position: left center;
+  }
+
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-ken-burns {
+  animation: kenBurns 20s infinite alternate ease-in-out;
+}
+
+.animate-gradient-border {
+  background: linear-gradient(45deg,
+      #ff0000,
+      #ff7f00,
+      #ffff00,
+      #00ff00,
+      #0000ff,
+      #4b0082,
+      #9400d3);
+  background-size: 400% 400%;
+  animation: gradient-xy 15s ease infinite;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  /* Chiều cao cho thanh cuộn ngang */
 }
 
 ::-webkit-scrollbar-track {
@@ -30,17 +85,41 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #5FB3FF;
-  /* Hover vào thanh cuộn thì hiện màu Electric Blue */
 }
 
-/* Ẩn thanh cuộn nhưng vẫn cuộn được (Dùng cho các list phim nằm ngang) */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 .no-scrollbar {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-scroll-reverse {
+  animation: scroll-reverse 30s linear infinite;
 }

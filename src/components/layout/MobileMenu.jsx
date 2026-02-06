@@ -43,7 +43,6 @@ const MobileMenu = ({ onClose }) => {
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0f0f0f] to-black">
 
-      {/* Header Profile */}
       <div className="px-6 pt-8 pb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -55,7 +54,7 @@ const MobileMenu = ({ onClose }) => {
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
           </div>
           <div>
-            <h3 className="text-white font-bold text-lg">User Name</h3>
+            <h3 className="text-white font-bold text-base sm:text-lg truncate max-w-[150px]">User Name</h3>
             <p className="text-xs text-cineverse-cyan font-medium tracking-wide">PREMIUM MEMBER</p>
           </div>
         </div>
@@ -66,7 +65,6 @@ const MobileMenu = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Search Input */}
       <div className="px-6 mb-8">
         <div className="relative group">
           <input
@@ -80,26 +78,33 @@ const MobileMenu = ({ onClose }) => {
         </div>
       </div>
 
-      {/* Navigation List */}
       <div className="flex-1 overflow-y-auto px-4 space-y-2">
         {menuItems.map((item, index) => (
-          <a
+          <button
             key={index}
-            href="#"
-            className="flex items-center gap-4 px-4 py-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 transition-all group duration-300"
+            onClick={() => {
+            }}
+            className="w-full flex items-center gap-4 px-4 py-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 transition-all group duration-300"
           >
             <span className="text-gray-400 group-hover:text-cineverse-cyan transition-colors group-hover:scale-110 duration-300">
               {item.icon}
             </span>
-            <span className="font-bold text-lg tracking-wide">{item.title}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-cineverse-cyan">
+            <span className="font-bold text-sm sm:text-base tracking-wide truncate">{item.title}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-cineverse-cyan"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-          </a>
+          </button>
         ))}
+
       </div>
 
-      {/* Footer Actions */}
       <div className="px-6 py-8 border-t border-white/5 space-y-4">
         <button className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full text-sm font-medium">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

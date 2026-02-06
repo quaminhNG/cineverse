@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard";
+import MovieCard from "../components/movie/MovieCard";
 import { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
-import MovieRow from "../components/MovieRow";
+import MovieRow from "../components/movie/MovieRow";
 import requests from "../services/requests";
 
 const Watch = () => {
@@ -85,11 +85,11 @@ const Watch = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-300 p-2">
+            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-300 p-2 isolate">
               {movie.cast.map((actor, idx) => (
                 <button
                   key={idx}
-                  className="w-12 h-12 rounded-full ring-[#0a0a0a] overflow-hidden relative transform transition-all duration-300 hover:scale-110 hover:z-10 hover:ring-cineverse-cyan hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] group"
+                  className="w-12 h-12 rounded-full ring-[#0a0a0a] overflow-hidden relative transform transition-all duration-300 hover:scale-110 hover:z-10 focus:z-10 focus:scale-110 hover:ring-cineverse-cyan hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] group z-0"
                   title={actor}
                 >
                   <img

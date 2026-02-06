@@ -1,8 +1,10 @@
+import defaultImage from "../../assets/images/hero-banner.png";
+
 const WatchedCard = ({
     episode = 1,
     title = "Peaky Blinders",
     duration = "55m",
-    image = "/src/assets/images/hero-banner.png",
+    image = defaultImage,
     progress = 75
 }) => {
     return (

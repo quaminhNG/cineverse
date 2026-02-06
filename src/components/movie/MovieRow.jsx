@@ -1,5 +1,5 @@
 import MovieCard from "./MovieCard";
-import axios, { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
+import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
@@ -42,6 +42,7 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
                 <MovieCard
                   title={movie.title || movie.name}
                   image={TMDB_IMAGE_BASE_URL + imagePath}
+                  isVertical={isPoster}
                 />
               </div>
             );

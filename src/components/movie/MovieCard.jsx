@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const MovieCard = ({ image, title }) => {
   return (
     <div className="relative w-full h-full rounded-none overflow-hidden group cursor-pointer shadow-lg">

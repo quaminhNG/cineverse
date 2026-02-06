@@ -1,7 +1,8 @@
-import heroBannerImg from "../assets/images/hero-banner.png";
+import heroBannerImg from "../../assets/images/hero-banner.png";
 import ContinueWatchingRow from "./ContinueWatchingRow";
-import axios from "../services/tmdb";
-import requests from "../services/requests";
+import Button from "../common/Button";
+import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
+import requests from "../../services/requests";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -60,24 +61,10 @@ const HeroBanner = () => {
               {truncate(movie?.overview, 150)}
             </p>
 
-            <div className="flex items-center gap-6">
-              <button
-                onClick={() => navigate('/watch')}
-                className="
-                px-6 py-3
-                rounded-md
-                font-semibold
-                text-white
-                bg-cineverse-gradient
-                backdrop-blur-sm
-                shadow-[0_0_20px_rgba(74,107,255,0.6)]
-                hover:shadow-[0_0_28px_rgba(74,107,255,0.85)]
-                transition-all
-                duration-200
-              "
-              >
+            <div className="flex items-center gap-6 z-20 relative">
+              <Button onClick={() => navigate('/watch')}>
                 Let's Watch
-              </button>
+              </Button>
               <button
                 className="
                 p-3

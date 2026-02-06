@@ -1,8 +1,13 @@
-import useScrollY from "../hooks/useScrollY";
+import { useState } from "react";
+import useScrollY from "../../hooks/useScrollY";
 import NavbarMenu from "./NavbarMenu";
+import Search from "../common/Search";
+import Notify from "../common/Notify";
 
 const Navbar = ({ isOpen, setIsOpen }) => {
   const scrolled = useScrollY();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNotifyOpen, setIsNotifyOpen] = useState(false);
   return (
     <nav className={`fixed top-0 w-full z-50 flex items-center justify-between px-8 md:px-16 h-20 transition-all duration-300 ${scrolled || isOpen ? "bg-transparent" : "bg-black/60"}`}>
       {/* left*/}
@@ -19,25 +24,11 @@ const Navbar = ({ isOpen, setIsOpen }) => {
 
       {/* right */}
       <div className="flex items-center gap-6">
-        <div className="hidden md:flex items-center gap-6 text-white">
-          <button className="p-2 rounded-full hover:bg-white/10 transition-colors group">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6 transition-transform group-hover:scale-110 group-hover:text-cineverse-cyan"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
-          </button>
+        <div className="hidden nav-lg:flex items-center gap-6 text-white">
+          <Search isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
 
-          <button className="p-2 rounded-full hover:bg-white/10 transition-colors group">
+          <button onClick={() => setIsNotifyOpen(!isNotifyOpen)}
+            className="p-2 rounded-full hover:bg-white/10 transition-colors group">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -53,7 +44,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
               />
             </svg>
           </button>
-
+          {isNotifyOpen && <Notify isNotifyOpen={isNotifyOpen} setIsNotifyOpen={setIsNotifyOpen} />}
           <div className="flex items-center gap-3 cursor-pointer group pl-2 border-l border-white/20">
             <div className="text-right hidden lg:block">
               <p className="text-sm font-bold text-white group-hover:text-cineverse-cyan transition-colors">User Name</p>
@@ -85,7 +76,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
         {/* hamburger */}
-        <div className="md:hidden flex items-center">
+        <div className="nav-lg:hidden flex items-center">
           <button onClick={() => setIsOpen(!isOpen)} className="p-1">
             {isOpen ? (
               <svg

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios, { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
-import requests from "../services/requests";
-import useInfiniteScroll from "../hooks/useInfiniteScroll";
+import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
+import requests from "../../services/requests";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 
 const MoviesHot = () => {
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ const MoviesHot = () => {
             </h2>
             <div
                 ref={containerRef}
-                className="relative flex overflow-x-auto overflow-y-hidden w-full py-14 no-scrollbar px-[27.5vw] md:px-[42.857143vw]"
+                className="relative flex overflow-x-auto overflow-y-hidden w-full py-14 no-scrollbar px-[27.5vw] md:px-[37.5vw] lg:px-[42.857143vw]"
                 onScroll={handleScroll}
             >
                 {[...Array(totalItems)].map((_, index) => {
@@ -72,7 +72,8 @@ const MoviesHot = () => {
                 duration-300
                 ${scaleClass}
                 w-[45vw]
-                md:w-[14.285714vw]
+                md:w-[25vw]
+                lg:w-[14.285714vw]
               `}
                         >
                             <img
