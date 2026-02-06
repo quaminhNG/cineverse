@@ -1,29 +1,30 @@
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Search = ({ isSearchOpen, setIsSearchOpen }) => {
+    const [query, setQuery] = useState("");
+    const navigate = useNavigate();
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (isSearchOpen && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isSearchOpen]);
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter' && query.trim()) {
+            navigate(`/search?q=${encodeURIComponent(query)}`);
+            setIsSearchOpen(false);
+            setQuery("");
+        }
+    };
+
     return (
-        <div className="relative flex items-center group">
-            <input
-                type="text"
-                className={`
-                bg-transparent text-white placeholder-gray-400 outline-none
-                transition-all duration-300 ease-in-out
-              `}
-                placeholder="Titles, people, genres..."
-                style={{ opacity: isSearchOpen ? 1 : 0 }}
-            />
-            <span
-                className={`
-                 ${isSearchOpen ? "scale-x-100" : "scale-x-0"}
-      pointer-events-none
-      absolute left-0 bottom-0
-      h-[2px] w-full
-      bg-cineverse-gradient-2
-      origin-right
-      transition-all duration-300 ease-in-out
-    `}
-            />
+        <div className={`relative flex items-center border-b transition-all duration-300 ${isSearchOpen ? "border-cineverse-cyan w-64" : "border-transparent w-10"}`}>
             <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 rounded-full hover:bg-white/10 transition-colors group z-10"
+                className="p-2 text-white hover:text-cineverse-cyan transition-colors"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +32,7 @@ const Search = ({ isSearchOpen, setIsSearchOpen }) => {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6 transition-transform group-hover:scale-110 group-hover:text-cineverse-cyan"
+                    className="w-6 h-6"
                 >
                     <path
                         strokeLinecap="round"
@@ -40,6 +41,19 @@ const Search = ({ isSearchOpen, setIsSearchOpen }) => {
                     />
                 </svg>
             </button>
+            <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                className={`
+                bg-transparent text-white placeholder-gray-400 outline-none
+                transition-all duration-300 ease-in-out px-2 w-full
+                ${isSearchOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+              `}
+                placeholder="Titles, people, genres..."
+            />
         </div>
     );
 };

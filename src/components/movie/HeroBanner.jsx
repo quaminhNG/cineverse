@@ -1,24 +1,74 @@
-import heroBannerImg from "../../assets/images/hero-banner.png";
 import ContinueWatchingRow from "./ContinueWatchingRow";
 import Button from "../common/Button";
 import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
 import requests from "../../services/requests";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import movieTrailer from "movie-trailer";
+import Skeleton from "../common/Skeleton";
 
 const HeroBanner = () => {
-  const [movie, setMovie] = useState([]);
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+  const handleClick = async (movie) => {
+    if (movie) {
+      let trailerId = null;
+
+      try {
+        const movieVideos = await axios.get(
+          `/movie/${movie.id}/videos?api_key=${API_KEY}`
+        );
+        const movieTrailer = movieVideos.data.results?.find(
+          (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
+        );
+        if (movieTrailer) trailerId = movieTrailer.key;
+      } catch (e) {
+      }
+
+      if (!trailerId) {
+        try {
+          const tvVideos = await axios.get(
+            `/tv/${movie.id}/videos?api_key=${API_KEY}`
+          );
+          const tvTrailer = tvVideos.data.results?.find(
+            (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
+          );
+          if (tvTrailer) trailerId = tvTrailer.key;
+        } catch (e) {
+        }
+      }
+
+      if (!trailerId) {
+        try {
+          const movieName = movie.title || movie.name || "";
+          trailerId = await movieTrailer(movieName, { id: true });
+        } catch (e) {
+          console.error("movie-trailer error:", e);
+        }
+      }
+
+      navigate("/watch", { state: { movie: movie, trailerId: trailerId } });
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
-      const request = await axios.get(requests.fetchNetflixOriginals);
-      setMovie(
-        request.data.results[
-        Math.floor(Math.random() * request.data.results.length - 1)
-        ]
-      );
-      return request;
+      setLoading(true);
+      try {
+        const request = await axios.get(requests.fetchNetflixOriginals);
+        setMovie(
+          request.data.results[
+          Math.floor(Math.random() * request.data.results.length - 1)
+          ]
+        );
+      } catch (error) {
+        console.error("Banner API Error:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchData();
   }, []);
@@ -27,6 +77,28 @@ const HeroBanner = () => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
   const hasWatched = false;
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
+        <Skeleton className="w-full h-full rounded-none" />
+        <div className="absolute inset-0 flex items-start pt-32 px-8 md:px-16">
+          <div className="w-full md:w-1/2 flex flex-col gap-6">
+            <Skeleton className="h-12 w-3/4 bg-white/10" variant="text" />
+            <div className="flex gap-4">
+              <Skeleton className="h-6 w-20 bg-white/10" variant="text" />
+              <Skeleton className="h-6 w-16 bg-white/10" variant="text" />
+            </div>
+            <Skeleton className="h-24 w-full bg-white/10" variant="text" />
+            <div className="flex gap-4">
+              <Skeleton className="h-12 w-32 rounded-full bg-white/10" />
+              <Skeleton className="h-12 w-12 rounded-full bg-white/10" variant="circle" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -62,7 +134,7 @@ const HeroBanner = () => {
             </p>
 
             <div className="flex items-center gap-6 z-20 relative">
-              <Button onClick={() => navigate('/watch')}>
+              <Button onClick={() => handleClick(movie)}>
                 Let's Watch
               </Button>
               <button

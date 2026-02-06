@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../components/layout/Footer";
 import Navbar from "../components/layout/Navbar";
 import { useState } from "react";
@@ -6,10 +6,11 @@ import MobileMenu from "../components/layout/MobileMenu";
 import HeroBanner from "../components/movie/HeroBanner";
 const MainLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   return (
     <div className="bg-cineverse-dark min-h-screen flex flex-col">
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <HeroBanner />
+      {location.pathname === "/" && <HeroBanner />}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-[55] nav-lg:hidden backdrop-blur-sm"

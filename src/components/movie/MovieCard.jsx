@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const MovieCard = ({ image, title }) => {
   return (
-    <div className="relative w-full h-full rounded-none overflow-hidden group cursor-pointer shadow-lg">
+    <div className="relative w-full h-full rounded-none overflow-hidden group cursor-pointer shadow-lg bg-black">
       <img
         src={image}
         alt={title}
@@ -10,7 +10,7 @@ const MovieCard = ({ image, title }) => {
         loading="lazy"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80" />
+      <div className="absolute inset-[-1px] bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 pointer-events-none" />
 
       <div className="absolute top-3 left-3">
         <h5 className="text-[10px] md:text-xs font-extrabold tracking-widest text-transparent bg-clip-text bg-cineverse-gradient drop-shadow-md opacity-90 transition-all duration-500 group-hover:brightness-125 group-hover:drop-shadow-[0_0_8px_rgba(143,239,255,0.8)]">
