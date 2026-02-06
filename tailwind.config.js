@@ -19,6 +19,10 @@ export default {
       },
       backgroundImage: {
         'cineverse-gradient': 'linear-gradient(135deg, #8FEFFF 0%, #5FB3FF 50%, #4A6BFF 100%)',
+        'cineverse-gradient-2': 'linear-gradient(135deg, #7ce8fcff 0%, #3067ffff 50%, #621edfff 100%)',
+      },
+      screens: {
+        'nav-lg': '1350px',
       }
     }
   },

@@ -1,13 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard";
+import YouTube from "react-youtube";
+import MovieCard from "../components/movie/MovieCard";
 import { TMDB_IMAGE_BASE_URL } from "../services/tmdb";
-import MovieRow from "../components/MovieRow";
+import MovieRow from "../components/movie/MovieRow";
 import requests from "../services/requests";
 
 const Watch = () => {
   const location = useLocation();
-  const movie = {
+  const { movie: stateMovie, trailerId } = location.state || {};
+  const movie = stateMovie ? {
+    ...stateMovie,
+    rating: stateMovie.vote_average ? stateMovie.vote_average.toFixed(1) : "N/A",
+    year: (stateMovie.release_date || stateMovie.first_air_date || "2024").substring(0, 4),
+    duration: "N/A",
+    cast: ["Cast Member 1", "Cast Member 2", "Cast Member 3"],
+    tags: ["Genre", "Action"],
+  } : {
     title: "Stranger Things",
     overview: "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.",
     rating: 9.0,
@@ -16,6 +25,14 @@ const Watch = () => {
     cast: ["Winona Ryder", "David Harbour", "Finn Wolfhard"],
     tags: ["Sci-Fi", "Horror", "Mystery"],
     backdrop_path: "/56v2KjBlU4XaOv9rVYkJu64HIIV.jpg"
+  };
+
+  const opts = {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      autoplay: 1,
+    },
   };
 
   const episodes = Array.from({ length: 8 }, (_, i) => ({
@@ -30,6 +47,10 @@ const Watch = () => {
     image: `https://picsum.photos/300/450?random=${i + 10}`
   }));
   const isPoster = true;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans pb-20">
@@ -50,26 +71,27 @@ const Watch = () => {
           </svg>
         </Link>
         <h1 className="text-lg md:text-xl font-bold truncate text-gray-100">
-          Watching: <span className="text-cineverse-cyan">{movie.title}</span> - S1:E1
+          Watching: <span className="text-cineverse-cyan">{movie.title || movie.name}</span>
         </h1>
       </div>
 
 
       <div className="px-6 md:px-12 max-w-[1600px] mx-auto mt-6">
-        <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(74,107,255,0.15)] ring-1 ring-white/10 relative group">
-          <iframe
-            className="w-full h-full object-cover"
-            src="https://www.youtube.com/embed/xcJtL7QggTI?autoplay=0&mute=0&controls=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
-            title="Video Player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+        <div className="w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(74,107,255,0.15)] ring-1 ring-white/10 relative group justify-center items-center flex">
+          {trailerId ? (
+            <YouTube videoId={trailerId} opts={opts} className="w-full h-full" />
+          ) : (
+            <div className="text-center p-10">
+              <h2 className="text-2xl font-bold text-gray-500">No Trailer Available</h2>
+              <p className="text-gray-600">Sorry, we couldn't find a trailer for this content.</p>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mt-6 mb-10 pb-8 border-b border-white/10">
           <div>
             <h2 className="text-3xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              {movie.title}
+              {movie.title || movie.name}
             </h2>
             <div className="flex items-center gap-4 text-sm text-gray-400 font-medium">
               <span className="flex items-center gap-1 text-green-400">
@@ -83,13 +105,16 @@ const Watch = () => {
               <span>•</span>
               <span>{movie.duration}</span>
             </div>
+            <p className="mt-4 text-gray-300 max-w-2xl text-sm leading-relaxed">
+              {movie.overview}
+            </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-300 p-2">
-              {movie.cast.map((actor, idx) => (
+            <div className="flex -space-x-3 hover:space-x-1 transition-all duration-300 p-2 isolate">
+              {movie.cast && movie.cast.map((actor, idx) => (
                 <button
                   key={idx}
-                  className="w-12 h-12 rounded-full ring-[#0a0a0a] overflow-hidden relative transform transition-all duration-300 hover:scale-110 hover:z-10 hover:ring-cineverse-cyan hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] group"
+                  className="w-12 h-12 rounded-full ring-[#0a0a0a] overflow-hidden relative transform transition-all duration-300 hover:scale-110 hover:z-10 focus:z-10 focus:scale-110 hover:ring-cineverse-cyan hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] group z-0"
                   title={actor}
                 >
                   <img

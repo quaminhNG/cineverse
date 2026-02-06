@@ -1,6 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { mockAuth } from "../../services/mockAuth";
 
 const MobileMenu = ({ onClose }) => {
+  const [user, setUser] = useState(null);
+  const [query, setQuery] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+      setQuery("");
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    setUser(mockAuth.getCurrentUser());
+  }, [location]);
+
+  const handleLogout = () => {
+    mockAuth.logout();
+    setUser(null);
+    onClose();
+    navigate("/login");
+  };
+
   const menuItems = [
     {
       title: "Home", icon: (
@@ -43,22 +69,35 @@ const MobileMenu = ({ onClose }) => {
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-[#0f0f0f] to-black">
 
-      {/* Header Profile */}
       <div className="px-6 pt-8 pb-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
-              alt="Profile"
-              className="w-12 h-12 rounded-full ring-2 ring-cineverse-cyan p-0.5 object-cover"
-            />
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
-          </div>
-          <div>
-            <h3 className="text-white font-bold text-lg">User Name</h3>
-            <p className="text-xs text-cineverse-cyan font-medium tracking-wide">PREMIUM MEMBER</p>
-          </div>
-        </div>
+        {user ? (
+          <Link to="/profile" className="flex items-center gap-4">
+            <div className="relative">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                alt="Profile"
+                className="w-12 h-12 rounded-full ring-2 ring-cineverse-cyan p-0.5 object-cover"
+              />
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-base sm:text-lg truncate max-w-[150px]">{user.name}</h3>
+              <p className="text-xs text-cineverse-cyan font-medium tracking-wide">PREMIUM MEMBER</p>
+            </div>
+          </Link>
+        ) : (
+          <Link to="/login" onClick={onClose} className="flex items-center gap-3 group">
+            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-cineverse-cyan/20 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-400 group-hover:text-cineverse-cyan">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-lg group-hover:text-cineverse-cyan transition-colors">Log In</h3>
+              <p className="text-xs text-gray-400">Welcome to Cineverse</p>
+            </div>
+          </Link>
+        )}
         <button onClick={onClose} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all text-white hover:text-cineverse-cyan hover:rotate-90 duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -66,40 +105,55 @@ const MobileMenu = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Search Input */}
       <div className="px-6 mb-8">
         <div className="relative group">
           <input
             type="text"
             placeholder="Find movies, TV shows..."
             className="w-full bg-[#1F1F1F] text-gray-200 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-cineverse-cyan/50 transition-all placeholder-gray-500 font-medium"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
           />
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-cineverse-cyan transition-colors">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
+          <button onClick={handleSearch} className="absolute left-4 top-1/2 -translate-y-1/2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-gray-400 group-hover:text-cineverse-cyan transition-colors">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Navigation List */}
       <div className="flex-1 overflow-y-auto px-4 space-y-2">
         {menuItems.map((item, index) => (
-          <a
+          <button
             key={index}
-            href="#"
-            className="flex items-center gap-4 px-4 py-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 transition-all group duration-300"
+            onClick={() => {
+            }}
+            className="w-full flex items-center gap-4 px-4 py-4 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 active:bg-white/10 transition-all group duration-300"
           >
             <span className="text-gray-400 group-hover:text-cineverse-cyan transition-colors group-hover:scale-110 duration-300">
               {item.icon}
             </span>
-            <span className="font-bold text-lg tracking-wide">{item.title}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-cineverse-cyan">
+            <span className="font-bold text-sm sm:text-base tracking-wide truncate">{item.title}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-cineverse-cyan"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-          </a>
+          </button>
         ))}
+
       </div>
 
-      {/* Footer Actions */}
       <div className="px-6 py-8 border-t border-white/5 space-y-4">
         <button className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors w-full text-sm font-medium">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -107,16 +161,17 @@ const MobileMenu = ({ onClose }) => {
           </svg>
           Settings
         </button>
-        <button className="flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors w-full text-sm font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-          </svg>
-          Sign Out
-        </button>
+        {user && (
+          <button onClick={handleLogout} className="flex items-center gap-3 text-red-400 hover:text-red-300 transition-colors w-full text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            Sign Out
+          </button>
+        )}
       </div>
 
     </div>
   );
 };
-
 export default MobileMenu;
