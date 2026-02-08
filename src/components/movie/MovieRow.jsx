@@ -1,55 +1,14 @@
 import MovieCard from "./MovieCard";
 import axios, { TMDB_IMAGE_BASE_URL, TMDB_IMAGE_W500_URL } from "../../services/tmdb";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import movieTrailer from "movie-trailer";
 import Skeleton from "../common/Skeleton";
+import useMovieNavigation from "../../hooks/useMovieNavigation";
 
 const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
-  const navigate = useNavigate();
+  const handleMovieClick = useMovieNavigation();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-  const handleClick = async (movie) => {
-    if (movie) {
-      let trailerId = null;
 
-      try {
-        const movieVideos = await axios.get(
-          `/movie/${movie.id}/videos?api_key=${API_KEY}`
-        );
-        const movieTrailer = movieVideos.data.results?.find(
-          (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
-        );
-        if (movieTrailer) trailerId = movieTrailer.key;
-      } catch (e) {
-      }
-
-      if (!trailerId) {
-        try {
-          const tvVideos = await axios.get(
-            `/tv/${movie.id}/videos?api_key=${API_KEY}`
-          );
-          const tvTrailer = tvVideos.data.results?.find(
-            (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
-          );
-          if (tvTrailer) trailerId = tvTrailer.key;
-        } catch (e) {
-        }
-      }
-
-      if (!trailerId) {
-        try {
-          const movieName = movie.title || movie.name || "";
-          trailerId = await movieTrailer(movieName, { id: true });
-        } catch (e) {
-          console.error("movie-trailer error:", e);
-        }
-      }
-
-      navigate("/watch", { state: { movie: movie, trailerId: trailerId } });
-    }
-  };
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -88,7 +47,7 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
               return (
                 <div
                   key={index}
-                  onClick={() => handleClick(movie)}
+                  onClick={() => handleMovieClick(movie)}
                   className={`
                   flex-shrink-0 
                   snap-center 

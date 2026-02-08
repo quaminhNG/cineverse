@@ -3,56 +3,16 @@ import Button from "../common/Button";
 import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
 import requests from "../../services/requests";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import movieTrailer from "movie-trailer";
 import Skeleton from "../common/Skeleton";
+import useMovieNavigation from "../../hooks/useMovieNavigation";
 
 const HeroBanner = () => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const handleMovieClick = useMovieNavigation();
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
-  const handleClick = async (movie) => {
-    if (movie) {
-      let trailerId = null;
 
-      try {
-        const movieVideos = await axios.get(
-          `/movie/${movie.id}/videos?api_key=${API_KEY}`
-        );
-        const movieTrailer = movieVideos.data.results?.find(
-          (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
-        );
-        if (movieTrailer) trailerId = movieTrailer.key;
-      } catch (e) {
-      }
-
-      if (!trailerId) {
-        try {
-          const tvVideos = await axios.get(
-            `/tv/${movie.id}/videos?api_key=${API_KEY}`
-          );
-          const tvTrailer = tvVideos.data.results?.find(
-            (vid) => vid.name === "Official Trailer" || (vid.type === "Trailer" && vid.site === "YouTube")
-          );
-          if (tvTrailer) trailerId = tvTrailer.key;
-        } catch (e) {
-        }
-      }
-
-      if (!trailerId) {
-        try {
-          const movieName = movie.title || movie.name || "";
-          trailerId = await movieTrailer(movieName, { id: true });
-        } catch (e) {
-          console.error("movie-trailer error:", e);
-        }
-      }
-
-      navigate("/watch", { state: { movie: movie, trailerId: trailerId } });
-    }
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -134,10 +94,11 @@ const HeroBanner = () => {
             </p>
 
             <div className="flex items-center gap-6 z-20 relative">
-              <Button onClick={() => handleClick(movie)}>
+              <Button onClick={() => handleMovieClick(movie)}>
                 Let's Watch
               </Button>
               <button
+                onClick={() => handleMovieClick(movie)}
                 className="
                 p-3
                 rounded-full
