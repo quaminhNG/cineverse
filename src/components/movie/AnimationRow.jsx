@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
 import requests from "../../services/requests";
+import useMovieNavigation from "../../hooks/useMovieNavigation";
 
 const AnimationRow = () => {
+    const handleMovieClick = useMovieNavigation();
     const [rows, setRows] = useState({ row1: [], row2: [], row3: [] });
     const shuffle = (arr) => {
         const result = [...arr];
@@ -43,7 +45,7 @@ const AnimationRow = () => {
 
             <div className="flex gap-4 animate-scroll w-max">
                 {duplicate(rows.row1).map((item, index) => (
-                    <div key={`r1-${index}`} className="flex-shrink-0">
+                    <div key={`r1-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
                             src={`${TMDB_IMAGE_BASE_URL}${item.poster_path}`}
                             alt={item.name || item.title}
@@ -55,7 +57,7 @@ const AnimationRow = () => {
 
             <div className="flex gap-4 animate-scroll-reverse w-max -ml-[100%]">
                 {duplicate(rows.row2).map((item, index) => (
-                    <div key={`r2-${index}`} className="flex-shrink-0">
+                    <div key={`r2-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
                             src={`${TMDB_IMAGE_BASE_URL}${item.backdrop_path || item.poster_path}`}
                             alt={item.name || item.title}
@@ -67,7 +69,7 @@ const AnimationRow = () => {
 
             <div className="flex gap-4 animate-scroll w-max">
                 {duplicate(rows.row3).map((item, index) => (
-                    <div key={`r3-${index}`} className="flex-shrink-0">
+                    <div key={`r3-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
                             src={`${TMDB_IMAGE_BASE_URL}${item.poster_path}`}
                             alt={item.name || item.title}

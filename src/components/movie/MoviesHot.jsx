@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
 import requests from "../../services/requests";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import useMovieNavigation from "../../hooks/useMovieNavigation";
 
 const MoviesHot = () => {
     const navigate = useNavigate();
+    const handleMovieClick = useMovieNavigation();
     const [movies, setMovies] = useState([]);
 
     useEffect(() => {
@@ -59,7 +61,7 @@ const MoviesHot = () => {
                             key={index}
                             onClick={() => {
                                 if (index === activeIndex) {
-                                    navigate('/watch');
+                                    handleMovieClick(movie);
                                 } else {
                                     setActiveIndex(index);
                                     scrollToIndex(index);
@@ -68,6 +70,7 @@ const MoviesHot = () => {
                             className={`
                 relative group
                 flex-shrink-0
+                cursor-pointer
                 transition-transform
                 duration-300
                 ${scaleClass}
