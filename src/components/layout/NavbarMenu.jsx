@@ -1,36 +1,41 @@
+import { Link, useLocation } from "react-router-dom";
+
 const NavbarMenu = () => {
+    const location = useLocation();
+    const isActive = (path) => location.pathname === path ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)] font-bold" : "text-gray-300";
+
     return (
-        <div className="hidden nav-lg:flex justify-center gap-8 text-gray-300">
-            <a
-                className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
-                href="#"
+        <div className="hidden nav-lg:flex justify-center gap-8">
+            <Link
+                to="/"
+                className={`block text-lg transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ${isActive('/')}`}
             >
                 Home
-            </a>
-            <a
-                className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
-                href="#"
+            </Link>
+            <Link
+                to="/tv-shows"
+                className={`block text-lg transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ${isActive('/tv-shows')}`}
             >
                 Tv Shows
-            </a>
-            <a
-                className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
-                href="#"
+            </Link>
+            <Link
+                to="/movies"
+                className={`block text-lg transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ${isActive('/movies')}`}
             >
                 Movies
-            </a>
-            <a
-                className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
-                href="#"
+            </Link>
+            <Link
+                to="/new-popular"
+                className={`block text-lg transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ${isActive('/new-popular')}`}
             >
                 New & Popular
-            </a>
-            <a
-                className="block text-lg font-medium transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
-                href="#"
+            </Link>
+            <Link
+                to="/my-list"
+                className={`block text-lg transition-all duration-300 ease-out hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] ${isActive('/my-list')}`}
             >
                 My Lists
-            </a>
+            </Link>
         </div>
     );
 };

@@ -10,7 +10,7 @@ const MainLayout = () => {
   return (
     <div className="bg-cineverse-dark min-h-screen flex flex-col">
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
-      {location.pathname === "/" && <HeroBanner />}
+
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-[55] nav-lg:hidden backdrop-blur-sm"
