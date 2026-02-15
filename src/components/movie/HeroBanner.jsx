@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Skeleton from "../common/Skeleton";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 
-const HeroBanner = () => {
+const HeroBanner = ({ fetchUrl }) => {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const handleMovieClick = useMovieNavigation();
@@ -18,7 +18,7 @@ const HeroBanner = () => {
     async function fetchData() {
       setLoading(true);
       try {
-        const request = await axios.get(requests.fetchNetflixOriginals);
+        const request = await axios.get(fetchUrl || requests.fetchNetflixOriginals);
         setMovie(
           request.data.results[
           Math.floor(Math.random() * request.data.results.length - 1)
