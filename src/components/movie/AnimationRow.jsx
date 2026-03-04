@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
+import axios, { TMDB_IMAGE_W500_URL } from "../../services/tmdb";
+import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 
@@ -21,9 +22,9 @@ const AnimationRow = () => {
                 const shuffledUrls = shuffle(Object.values(requests));
                 const [url1, url2, url3] = shuffledUrls.slice(0, 3);
                 const [res1, res2, res3] = await Promise.all([
-                    axios.get(url1),
-                    axios.get(url2),
-                    axios.get(url3),
+                    cachedGet(axios, url1),
+                    cachedGet(axios, url2),
+                    cachedGet(axios, url3),
                 ]);
                 setRows({
                     row1: res1.data.results,
@@ -47,9 +48,11 @@ const AnimationRow = () => {
                 {duplicate(rows.row1).map((item, index) => (
                     <div key={`r1-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
-                            src={`${TMDB_IMAGE_BASE_URL}${item.poster_path}`}
+                            src={`${TMDB_IMAGE_W500_URL}${item.poster_path}`}
                             alt={item.name || item.title}
                             className="w-32 h-48 object-cover rounded-lg shadow-lg hover:scale-110 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 ))}
@@ -59,9 +62,11 @@ const AnimationRow = () => {
                 {duplicate(rows.row2).map((item, index) => (
                     <div key={`r2-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
-                            src={`${TMDB_IMAGE_BASE_URL}${item.backdrop_path || item.poster_path}`}
+                            src={`${TMDB_IMAGE_W500_URL}${item.backdrop_path || item.poster_path}`}
                             alt={item.name || item.title}
                             className="w-64 h-36 object-cover rounded-lg shadow-lg hover:scale-110 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 ))}
@@ -71,9 +76,11 @@ const AnimationRow = () => {
                 {duplicate(rows.row3).map((item, index) => (
                     <div key={`r3-${index}`} className="flex-shrink-0 cursor-pointer" onClick={() => handleMovieClick(item)}>
                         <img
-                            src={`${TMDB_IMAGE_BASE_URL}${item.poster_path}`}
+                            src={`${TMDB_IMAGE_W500_URL}${item.poster_path}`}
                             alt={item.name || item.title}
                             className="w-32 h-48 object-cover rounded-lg shadow-lg hover:scale-110 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 ))}

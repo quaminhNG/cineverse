@@ -10,9 +10,12 @@ const CineverseSpecial = () => {
             <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-0 w-full h-full">
                     <img
-                        src="https://image.tmdb.org/t/p/original/t5zCBSB5xMDKcDqe91qahCOUYVV.jpg"
+                        src="https://image.tmdb.org/t/p/w1280/t5zCBSB5xMDKcDqe91qahCOUYVV.jpg"
                         alt="Special Background"
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        loading="eager"
+                        fetchpriority="high"
+                        decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent z-10"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10"></div>

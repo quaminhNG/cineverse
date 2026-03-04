@@ -20,6 +20,9 @@ const useInfiniteScroll = (items, options = {}) => {
     // useRef: Tạo tham chiếu đến thẻ DOM container (để thao tác scroll mà không gây re-render).
     const containerRef = useRef(null);
 
+    // Flag để chặn handleScroll khi đang thực hiện căn giữa ban đầu
+    const isInitializingRef = useRef(false);
+
     // useState: Lưu trữ index của item đang nằm ở chính giữa màn hình (Active Index).
     // Khởi tạo giá trị ban đầu là item nằm ở chính giữa danh sách khổng lồ.
     const [activeIndex, setActiveIndex] = useState(
@@ -57,28 +60,25 @@ const useInfiniteScroll = (items, options = {}) => {
         const container = containerRef.current;
         if (!container) return;
 
+        // Chặn xử lý trong khi đang khởi tạo vị trí ban đầu
+        if (isInitializingRef.current) return;
+
+        const children = container.children;
+        if (!children.length) return;
+
         // A. TÌM ITEM ĐANG ACTIVE (ĐANG Ở GIỮA)
         // Xác định tâm của khung nhìn hiện tại
         const center = container.scrollLeft + container.offsetWidth / 2;
+        const itemWidth = children[0].offsetWidth;
 
-        let closestIndex = 0;
-        let minDistance = Infinity; // Khởi tạo khoảng cách nhỏ nhất là vô cùng
-        const children = container.children;
-
-        // Vòng lặp tìm item nào có tâm gần với tâm khung nhìn nhất
-        for (let i = 0; i < children.length; i++) {
-            const item = children[i];
-            const itemCenter = item.offsetLeft + item.offsetWidth / 2;
-            const distance = Math.abs(center - itemCenter); // Trị tuyệt đối khoảng cách
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = i;
-            }
-        }
+        // Tối ưu: Tính toán trực tiếp bằng toán học thay vì vòng lặp toàn bộ phần tử
+        // Ước tính index gần nhất dựa trên scrollLeft và itemWidth
+        const estimatedIndex = Math.round(
+            (center - children[0].offsetLeft - itemWidth / 2) / itemWidth
+        );
+        const closestIndex = Math.max(0, Math.min(estimatedIndex, children.length - 1));
 
         // B. LOGIC "DỊCH CHUYỂN TỨC THỜI" (INFINITE LOOP TRICK)
-        const itemWidth = children[0].offsetWidth; // Lấy chiều rộng 1 item
         const singleSetWidth = itemWidth * items.length; // Chiều rộng của 1 bộ danh sách gốc
 
         // Ngưỡng trái: Nếu cuộn qua mốc này -> Đang ở quá gần đầu
@@ -113,25 +113,35 @@ const useInfiniteScroll = (items, options = {}) => {
         const centerIndex = Math.floor(newTotalItems / 2);
         setActiveIndex(centerIndex);
 
-        // Thực hiện cuộn ngay lập tức đến vị trí giữa khi component vừa load
         const container = containerRef.current;
-        if (container) {
-            // Dùng setTimeout để đẩy việc này xuống cuối hàng đợi sự kiện (Event Loop)
-            // Đảm bảo DOM đã render xong kích thước các phần tử con thì tính toán mới đúng.
-            setTimeout(() => {
+        if (!container) return;
+
+        // Bật flag để chặn handleScroll trong khi đang căn giữa
+        isInitializingRef.current = true;
+
+        // Dùng requestAnimationFrame để đảm bảo DOM đã layout hoàn toàn
+        // trước khi đọc offsetLeft/offsetWidth (chính xác hơn setTimeout)
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
                 const item = container.children[centerIndex];
-                if (!item) return;
+                if (!item) {
+                    isInitializingRef.current = false;
+                    return;
+                }
 
                 const containerCenter = container.offsetWidth / 2;
                 const itemCenter = item.offsetWidth / 2;
                 const scrollLeft = item.offsetLeft - containerCenter + itemCenter;
 
-                container.scrollTo({
-                    left: scrollLeft,
-                    behavior: "auto", // Quan trọng: "auto" để cuộn tức thì, không có hiệu ứng chạy chạy
+                // "auto" = tức thì, không có hiệu ứng smooth để tránh cuộn nhìn thấy
+                container.scrollTo({ left: scrollLeft, behavior: "auto" });
+
+                // Tắt flag sau khi đã scroll xong (1 frame sau để chắc chắn)
+                requestAnimationFrame(() => {
+                    isInitializingRef.current = false;
                 });
-            }, 50); // Delay 50ms
-        }
+            });
+        });
     }, [items.length, repeatCount]);
 
     // --- 5. TRẢ VỀ KẾT QUẢ (EXPOSE) ---

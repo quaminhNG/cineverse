@@ -137,3 +137,45 @@
 .animate-shimmer {
   animation: shimmer 7s linear infinite;
 }
+
+/* =============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================= */
+
+/* GPU acceleration cho animated elements */
+.animate-scroll,
+.animate-scroll-reverse {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.animate-ken-burns {
+  will-change: transform;
+}
+
+/* Tối ưu scroll performance cho horizontal scroll containers */
+.no-scrollbar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tối ưu card hover transitions */
+.group:hover img {
+  will-change: transform;
+}
+
+/* Image lazy loading fade-in */
+img {
+  transition: opacity 0.4s ease;
+}
+
+/* Tối ưu animations với contain */
+.animate-gradient-border {
+  contain: layout style;
+}
+
+/* Giảm paint area cho các blur decorations */
+[class*="blur-"] {
+  will-change: filter;
+  contain: layout paint;
+}
