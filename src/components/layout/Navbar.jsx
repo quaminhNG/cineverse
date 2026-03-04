@@ -26,7 +26,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-50 flex items-center justify-between px-8 md:px-16 h-20 transition-all duration-300 ${scrolled || isOpen ? "bg-transparent" : "bg-black/60"}`}>
+    <nav className={`fixed top-0 w-full z-50 flex items-center justify-between px-8 md:px-16 h-20 transition-all duration-500 ${scrolled ? "bg-black/90 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}>
       {/* left*/}
       <div className="flex items-center gap-12">
         <div className="cursor-pointer">

@@ -1,6 +1,7 @@
 import ContinueWatchingRow from "./ContinueWatchingRow";
 import Button from "../common/Button";
 import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
+import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import { useState, useEffect } from "react";
 import Skeleton from "../common/Skeleton";
@@ -18,12 +19,10 @@ const HeroBanner = ({ fetchUrl }) => {
     async function fetchData() {
       setLoading(true);
       try {
-        const request = await axios.get(fetchUrl || requests.fetchNetflixOriginals);
-        setMovie(
-          request.data.results[
-          Math.floor(Math.random() * request.data.results.length - 1)
-          ]
-        );
+        const request = await cachedGet(axios, fetchUrl || requests.fetchNetflixOriginals);
+        const results = request.data.results;
+        const randomIndex = Math.floor(Math.random() * results.length);
+        setMovie(results[randomIndex]);
       } catch (error) {
         console.error("Banner API Error:", error);
       } finally {
@@ -31,7 +30,7 @@ const HeroBanner = ({ fetchUrl }) => {
       }
     }
     fetchData();
-  }, []);
+  }, [fetchUrl]);
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
@@ -62,12 +61,18 @@ const HeroBanner = ({ fetchUrl }) => {
 
   return (
     <div
-      className={`relative w-full ${hasWatched ? "h-[700px] md:h-[800px]" : "h-[500px] md:h-[600px]"} bg-cover bg-center overflow-hidden transition-all duration-500`}
-      style={{
-        backgroundImage: `url("https://image.tmdb.org/t/p/original/${movie?.backdrop_path}")`,
-        backgroundPosition: "center center",
-      }}
+      className={`relative w-full ${hasWatched ? "h-[700px] md:h-[800px]" : "h-[500px] md:h-[600px]"} overflow-hidden transition-all duration-500 bg-black`}
     >
+      {/* Hero background image - dùng <img> thay vì background-image để browser cache tốt hơn */}
+      <img
+        src={`https://image.tmdb.org/t/p/w1280/${movie?.backdrop_path}`}
+        alt={movie?.title || movie?.name || ""}
+        className="absolute inset-0 w-full h-full object-cover object-center animate-fade-in"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async"
+      />
+
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent" />
 
       <div className={`absolute inset-0 flex items-start pt-32 px-8 md:px-16 ${hasWatched ? "pb-60" : "pb-20"}`}>

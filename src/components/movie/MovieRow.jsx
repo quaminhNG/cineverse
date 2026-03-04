@@ -1,5 +1,6 @@
 import MovieCard from "./MovieCard";
 import axios, { TMDB_IMAGE_BASE_URL, TMDB_IMAGE_W500_URL } from "../../services/tmdb";
+import { cachedGet } from "../../services/tmdbCache";
 import { useEffect, useState } from "react";
 import Skeleton from "../common/Skeleton";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
@@ -13,7 +14,7 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
     async function fetchData() {
       setLoading(true);
       try {
-        const request = await axios.get(fetchUrl);
+        const request = await cachedGet(axios, fetchUrl);
         setMovies(request.data.results);
       } catch (error) {
         console.error("Error", error);
@@ -52,9 +53,6 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
                   flex-shrink-0 
                   snap-center 
                   cursor-pointer 
-                  transition-transform 
-                  duration-300
-                  hover:scale-105
                   z-0
                   hover:z-10
                   ${isPoster

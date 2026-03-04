@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
+import axios, { TMDB_IMAGE_W500_URL } from "../../services/tmdb";
+import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
@@ -13,7 +14,7 @@ const MoviesHot = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const request = await axios.get(requests.fetchTrending);
+                const request = await cachedGet(axios, requests.fetchTrending);
                 setMovies(request.data.results);
             } catch (error) {
                 console.error("Error fetching hot movies:", error);
@@ -80,9 +81,11 @@ const MoviesHot = () => {
               `}
                         >
                             <img
-                                src={`${TMDB_IMAGE_BASE_URL}${movie.poster_path}`}
+                                src={`${TMDB_IMAGE_W500_URL}${movie.poster_path}`}
                                 alt={movie.title || movie.name}
                                 className="w-full aspect-[2/3] object-cover rounded-md"
+                                loading="lazy"
+                                decoding="async"
                             />
                             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent opacity-60 rounded-md pointer-events-none" />
                             <div className="absolute top-2 left-2 md:top-3 md:left-3 z-10">
