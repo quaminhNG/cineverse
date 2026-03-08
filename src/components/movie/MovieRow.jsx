@@ -1,14 +1,21 @@
+import { useEffect, useState, useRef, useCallback } from "react";
 import MovieCard from "./MovieCard";
-import axios, { TMDB_IMAGE_BASE_URL, TMDB_IMAGE_W500_URL } from "../../services/tmdb";
+import MovieHoverCard from "./MovieHoverCard";
+import axios, { TMDB_IMAGE_W500_URL } from "../../services/tmdb";
 import { cachedGet } from "../../services/tmdbCache";
-import { useEffect, useState } from "react";
 import Skeleton from "../common/Skeleton";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
+
+const HOVER_DELAY = 500;
 
 const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
   const handleMovieClick = useMovieNavigation();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [hoverMovie, setHoverMovie] = useState(null);
+  const [hoverRect, setHoverRect] = useState(null);
+  const hoverTimerRef = useRef(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,6 +31,30 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
     }
     fetchData();
   }, [fetchUrl]);
+
+  const handleMouseEnter = useCallback((movie, e) => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    hoverTimerRef.current = setTimeout(() => {
+      setHoverMovie(movie);
+      setHoverRect(rect);
+    }, HOVER_DELAY);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = setTimeout(() => {
+      setHoverMovie(null);
+      setHoverRect(null);
+    }, 100);
+  }, []);
+
+  const closeHoverCard = useCallback(() => {
+    clearTimeout(hoverTimerRef.current);
+    setHoverMovie(null);
+    setHoverRect(null);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 py-4 md:py-8">
       <h2 className="text-white text-xl md:text-2xl font-semibold mb-2 text-start pl-4 md:pl-0">
@@ -49,6 +80,8 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
                 <div
                   key={index}
                   onClick={() => handleMovieClick(movie)}
+                  onMouseEnter={(e) => handleMouseEnter(movie, e)}
+                  onMouseLeave={handleMouseLeave}
                   className={`
                   flex-shrink-0 
                   snap-center 
@@ -71,6 +104,24 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
             })}
         </div>
       </div>
+
+      {hoverMovie && hoverRect && (
+        <div
+          style={{ position: 'absolute', zIndex: 9999 }}
+          onMouseEnter={() => clearTimeout(hoverTimerRef.current)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <MovieHoverCard
+            movie={hoverMovie}
+            anchorRect={hoverRect}
+            onClose={closeHoverCard}
+            onPlay={() => {
+              closeHoverCard();
+              handleMovieClick(hoverMovie);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

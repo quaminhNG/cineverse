@@ -1,18 +1,23 @@
 import HeroBanner from "../components/movie/HeroBanner";
 import MovieRow from "../components/movie/MovieRow";
-import MoviesHot from "../components/movie/MoviesHot";
-import CineverseSpecial from "../components/movie/CineverseSpecial";
+import MovieShowcase from "../components/movie/MovieShowcase";
 import requests from "../services/requests";
-import AnimationRow from "../components/movie/AnimationRow";
+import SpotlightGrid from "../components/movie/SpotlightGrid";
+
 const Home = () => {
   const randomPoster = () => Math.random() > 0.5;
+
   return (
     <div className="w-full min-h-screen pb-20 bg-cineverse-dark">
       <HeroBanner />
       <div className="pt-10 px-8 md:px-16">
-        <AnimationRow />
-        <MoviesHot />
-        <CineverseSpecial />
+        <SpotlightGrid />
+        <MovieRow
+          title="Trending Now"
+          fetchUrl={requests.fetchTrending}
+          isPoster={false}
+        />
+        <MovieShowcase />
         <div className="flex flex-col gap-4 md:gap-8 pb-20 w-full px-0">
           <MovieRow
             title="NETFLIX ORIGINALS"
@@ -39,4 +44,5 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;
