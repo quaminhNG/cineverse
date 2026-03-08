@@ -16,7 +16,6 @@ function App() {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
-        {/* NHÓM 1: Các trang dùng chung Layout (Có Navbar + Footer) */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />}></Route>
           <Route path="tv-shows" element={<TvShows />}></Route>
@@ -26,11 +25,9 @@ function App() {
           <Route path="search" element={<Search />}></Route>
           <Route path="profile" element={<Profile />}></Route>
         </Route>
-        {/* NHÓM 2: Các trang Full màn hình (Không Navbar/Footer) */}
         <Route path="/login" element={<Login />} />
         <Route path="/watch" element={<Watch />} />
 
-        {/* Route 404 (Nếu gõ linh tinh) */}
         <Route
           path="*"
           element={
