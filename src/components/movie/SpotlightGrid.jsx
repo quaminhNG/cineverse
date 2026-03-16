@@ -61,7 +61,7 @@ const SpotlightGrid = () => {
 
                     {/* Nút Play to bự khi hover */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                        <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+                        <div className="absolute inset-0 bg-black/20"></div>
                         <div className="relative bg-cineverse-main/90 text-white w-20 h-20 flex items-center justify-center rounded-full shadow-[0_0_30px_rgba(95,179,255,0.6)] hover:scale-110 transition-transform">
                             <FaPlay className="text-3xl ml-2" />
                         </div>
@@ -96,7 +96,7 @@ const SpotlightGrid = () => {
 
                             {/* Tiny Play Button */}
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
-                                <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+                                <div className="absolute inset-0 bg-black/30"></div>
                                 <div className="relative bg-white/20 text-white w-12 h-12 flex items-center justify-center rounded-full backdrop-blur-sm border border-white/50 group-hover:bg-cineverse-main group-hover:border-cineverse-main group-hover:shadow-[0_0_15px_rgba(95,179,255,0.5)] transition-all">
                                     <FaPlay className="text-sm ml-1" />
                                 </div>

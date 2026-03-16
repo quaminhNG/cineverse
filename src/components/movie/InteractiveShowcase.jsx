@@ -71,23 +71,22 @@ const InteractiveShowcase = () => {
                         className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded-lg hover:bg-gray-200 transition-all font-bold group/btn shadow-lg hover:scale-105"
                     >
                         <FaPlay className="text-xl group-hover/btn:text-cineverse-main transition-colors" />
-                        <span>Xem Ngay</span>
+                        <span>Watch Now</span>
                     </button>
                     <button
                         onClick={() => handleMovieClick(activeMovie)}
                         className="flex items-center justify-center gap-2 bg-gray-600/50 text-white px-8 py-3 rounded-lg hover:bg-gray-500/70 transition-all font-bold backdrop-blur-md shadow-lg hover:scale-105"
                     >
                         <FaInfoCircle className="text-xl" />
-                        <span>Chi Tiết</span>
+                        <span>More Info</span>
                     </button>
                 </div>
             </div>
 
-            {/* Cột phải / Dưới: Danh sách phim Hot dạng thẻ (Cards) */}
             <div className="relative z-20 w-full md:w-[45%] p-6 md:p-8 h-full bg-gradient-to-t md:bg-gradient-to-l from-[#141414] via-[#141414]/80 to-transparent flex flex-col justify-end">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-white border-l-4 border-cineverse-main pl-3">
-                        Đang Thịnh Hành
+                        Trending Now
                     </h3>
                 </div>
 
@@ -104,17 +103,14 @@ const InteractiveShowcase = () => {
                                     : 'border-transparent hover:border-white/30'
                                     }`}
                             >
-                                {/* Ảnh Poster (thay vì backdrop cho đẹp dọc) */}
                                 <div className="aspect-[2/3] w-full relative">
                                     <img
                                         src={`${TMDB_IMAGE_W500_URL}${movie?.poster_path || movie?.backdrop_path}`}
                                         alt={movie?.title || movie?.name}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover/item:scale-110"
                                     />
-                                    {/* Lớp phủ gradient đen ở dưới card */}
                                     <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 to-transparent"></div>
 
-                                    {/* Số thứ hạng bự chà bá */}
                                     <span className="absolute -left-2 -bottom-4 text-7xl font-black text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.8)] drop-shadow-lg opacity-80 z-10 font-sans">
                                         {index + 1}
                                     </span>
