@@ -1,27 +1,20 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useScrollY from "../../hooks/useScrollY";
 import NavbarMenu from "./NavbarMenu";
 import Search from "../common/Search";
 import Notify from "../common/Notify";
-import { mockAuth } from "../../services/mockAuth";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = ({ isOpen, setIsOpen }) => {
   const scrolled = useScrollY();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotifyOpen, setIsNotifyOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const currentUser = mockAuth.getCurrentUser();
-    setUser(currentUser);
-  }, [location]);
 
   const handleLogout = () => {
-    mockAuth.logout();
-    setUser(null);
+    logout();
     navigate("/login");
   };
 

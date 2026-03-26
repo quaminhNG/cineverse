@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-import { mockAuth } from "../services/mockAuth";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/common/Button";
 
 const Profile = () => {
-    const [user, setUser] = useState(null);
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const currentUser = mockAuth.getCurrentUser();
-        if (!currentUser) {
-            navigate("/login");
-        } else {
-            setUser(currentUser);
-        }
-    }, [navigate]);
-
     const handleLogout = () => {
-        mockAuth.logout();
+        logout();
         navigate("/login");
     };
 

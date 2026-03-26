@@ -1,36 +1,29 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import MovieCard from "./MovieCard";
 import MovieHoverCard from "./MovieHoverCard";
 import axios, { TMDB_IMAGE_W500_URL } from "../../services/tmdb";
-import { cachedGet } from "../../services/tmdbCache";
 import Skeleton from "../common/Skeleton";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
+import { useQuery } from "@tanstack/react-query";
 
 const HOVER_DELAY = 500;
 
 const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
   const handleMovieClick = useMovieNavigation();
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [hoverMovie, setHoverMovie] = useState(null);
   const [hoverRect, setHoverRect] = useState(null);
   const hoverTimerRef = useRef(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      try {
-        const request = await cachedGet(axios, fetchUrl);
-        setMovies(request.data.results);
-      } catch (error) {
-        console.error("Error", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [fetchUrl]);
+  // Sử dụng useQuery thay cho useState/useEffect
+  const { data, isLoading } = useQuery({
+    queryKey: ["movies", fetchUrl],
+    queryFn: async () => {
+      const response = await axios.get(fetchUrl);
+      return response.data.results;
+    },
+  });
+
+  const movies = data || [];
 
   const handleMouseEnter = useCallback((movie, e) => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -62,7 +55,7 @@ const MovieRow = ({ title, fetchUrl, isPoster = false }) => {
       </h2>
       <div className="relative w-full">
         <div className="flex overflow-x-auto gap-2 md:gap-4 no-scrollbar pb-4 snap-x snap-mandatory px-4 md:px-0">
-          {loading
+          {isLoading
             ? Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}

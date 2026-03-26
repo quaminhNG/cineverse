@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import MainLayout from "./layout/MainLayout";
 import LoadingScreen from "./components/common/LoadingScreen";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Search = lazy(() => import("./pages/Search"));
@@ -21,9 +22,9 @@ function App() {
           <Route path="tv-shows" element={<TvShows />}></Route>
           <Route path="movies" element={<Movies />}></Route>
           <Route path="new-popular" element={<NewPopular />}></Route>
-          <Route path="my-list" element={<MyList />}></Route>
+          <Route path="my-list" element={<ProtectedRoute><MyList /></ProtectedRoute>}></Route>
           <Route path="search" element={<Search />}></Route>
-          <Route path="profile" element={<Profile />}></Route>
+          <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>}></Route>
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/watch" element={<Watch />} />

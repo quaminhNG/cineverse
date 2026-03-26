@@ -1,38 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import axios from '../../services/tmdb';
-import { cachedGet } from '../../services/tmdbCache';
 import requests from '../../services/requests';
 import useMovieNavigation from '../../hooks/useMovieNavigation';
 import { TMDB_IMAGE_BASE_URL } from '../../services/tmdb';
+import { useQuery } from '@tanstack/react-query';
 
 const MovieShowcase = () => {
-    const [movie, setMovie] = useState(null);
     const handleMovieClick = useMovieNavigation();
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const request = await cachedGet(axios, requests.fetchTopRated);
-                const movies = request.data.results;
-                if (movies && movies.length > 0) {
-                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                    setMovie(randomMovie);
-                }
-            } catch (error) {
-                console.error("Error fetching showcase movie", error);
+    const { data: movie, isLoading } = useQuery({
+        queryKey: ["showcase"],
+        queryFn: async () => {
+            const response = await axios.get(requests.fetchTopRated);
+            const movies = response.data.results;
+            if (movies && movies.length > 0) {
+                return movies[Math.floor(Math.random() * movies.length)];
             }
-        }
-        fetchData();
-    }, []);
+            return null;
+        },
+        staleTime: 1000 * 60 * 30, // 30 mins
+    });
 
-    if (!movie) return null;
+    if (isLoading || !movie) return null;
 
     return (
         <div className="w-full relative my-12 group">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-cineverse-cyan/30 rounded-full blur-[100px] animate-pulse"></div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#c026d3]/30 rounded-full blur-[100px] animate-pulse delay-700"></div>
 
-            <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <div className="relative w-full h-[400px] md:h-[500px] rounded-none overflow-hidden ring-1 ring-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-0 w-full h-full bg-[#141414]">
                     <img
                         src={`${TMDB_IMAGE_BASE_URL}${movie.backdrop_path || movie.poster_path}`}
@@ -45,7 +41,7 @@ const MovieShowcase = () => {
                 </div>
 
                 <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 md:px-16 max-w-4xl">
-                    <span className="inline-block py-1 px-3 rounded bg-white/10 backdrop-blur-md border border-white/20 text-cineverse-cyan text-[10px] md:text-sm font-bold tracking-wider w-fit mb-3 md:mb-4">
+                    <span className="inline-block py-1 px-3 rounded-none bg-white/10 backdrop-blur-md border border-white/20 text-cineverse-cyan text-[10px] md:text-sm font-bold tracking-wider w-fit mb-3 md:mb-4">
                         FEATURED MOVIE
                     </span>
 

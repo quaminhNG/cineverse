@@ -1,29 +1,21 @@
-import { useEffect, useState } from "react";
 import axios, { TMDB_IMAGE_W500_URL } from "../../services/tmdb";
-import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 import { FaPlay } from 'react-icons/fa';
+import { useQuery } from "@tanstack/react-query";
 
 const TopTenCarousel = () => {
-    const [movies, setMovies] = useState([]);
     const handleMovieClick = useMovieNavigation();
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                // Lấy danh sách Top Rated ở VN hoặc Global
-                const response = await cachedGet(axios, requests.fetchTopRated);
-                const top10 = response.data.results.slice(0, 10);
-                setMovies(top10);
-            } catch (error) {
-                console.error("Error fetching top 10 movies:", error);
-            }
-        }
-        fetchData();
-    }, []);
+    const { data: movies, isLoading } = useQuery({
+        queryKey: ["top10"],
+        queryFn: async () => {
+            const response = await axios.get(requests.fetchTopRated);
+            return response.data.results.slice(0, 10);
+        },
+    });
 
-    if (movies.length === 0) return null;
+    if (isLoading || !movies || movies.length === 0) return null;
 
     return (
         <div className="w-full my-8 relative">

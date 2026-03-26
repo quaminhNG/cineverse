@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import { mockAuth } from "../../services/mockAuth";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 
 const AuthForm = () => {
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { login, register } = useAuth();
     const [stateAuth, setStateAuth] = useState("login");
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -67,12 +68,12 @@ const AuthForm = () => {
 
         try {
             if (stateAuth === "register") {
-                const user = await mockAuth.register(regisForm.name, regisForm.email, regisForm.password);
+                const user = await register(regisForm.name, regisForm.email, regisForm.password);
                 console.log("Registered:", user);
                 showToast("Account created successfully!", "success");
                 navigate("/");
             } else {
-                const user = await mockAuth.login(form.email, form.password);
+                const user = await login(form.email, form.password);
                 console.log("Logged in:", user);
                 showToast("Welcome back, " + user.name, "success");
                 navigate("/");
@@ -99,28 +100,24 @@ const AuthForm = () => {
     return (
         <div className="flex flex-col justify-center min-h-screen p-4 w-full max-w-md mx-auto z-10 relative">
             <div
-                className="bg-black/20 backdrop-blur-xl p-8 sm:p-12 rounded-2xl shadow-2xl w-full"
+                className="bg-zinc-900/90 backdrop-blur-md p-8 sm:p-12 rounded-2xl shadow-xl w-full border border-white/5"
             >
                 <div className="mb-8">
                     <h2
-                        key={stateAuth === "login" ? "title-login" : "title-regis"}
-                        className="text-3xl font-extrabold text-white mb-2 tracking-wide animate-fade-in"
-                        style={{ animationDuration: "0.5s" }}
+                        className="text-3xl font-extrabold text-white mb-2 tracking-wide"
                     >
                         {stateAuth === "login" ? "Welcome Back" : "Create Account"}
                     </h2>
 
                     <p
-                        key={stateAuth === "login" ? "desc-login" : "desc-regis"}
-                        className="text-gray-400 text-sm animate-fade-in"
-                        style={{ animationDuration: "0.5s", animationDelay: "0.1s", animationFillMode: "both" }}
+                        className="text-gray-400 text-sm"
                     >
                         {stateAuth === "login" ? "Please enter your details to sign in." : "Join Cineverse for free to start watching."}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-                    <div className={`grid transition-all duration-500 ease-in-out -mx-3 -mt-4 ${stateAuth === "register" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className={`grid transition-all duration-300 ease-in-out -mx-3 -mt-4 ${stateAuth === "register" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                         <div className="overflow-hidden pt-4 px-3">
                             <Input
                                 label="Name"
@@ -150,7 +147,7 @@ const AuthForm = () => {
                         error={errors.password}
                     />
 
-                    <div className={`grid transition-all duration-500 ease-in-out -mx-3 -mt-4 ${stateAuth === "register" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className={`grid transition-all duration-300 ease-in-out -mx-3 -mt-4 ${stateAuth === "register" ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                         <div className="overflow-hidden pt-4 px-3">
                             <Input
                                 label="Confirm Password"
@@ -174,12 +171,12 @@ const AuthForm = () => {
                     <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-6 py-4 text-lg bg-cineverse-gradient hover:brightness-110 transition-all shadow-[0_0_20px_rgba(34,211,238,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full mt-6 py-4 text-lg bg-cineverse-cyan text-black font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto"></div>
                         ) : (
-                            <span className="transition-all duration-300">
+                            <span>
                                 {stateAuth === "login" ? "Sign In" : "Sign Up"}
                             </span>
                         )}

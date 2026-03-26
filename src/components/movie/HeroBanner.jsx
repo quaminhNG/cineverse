@@ -1,43 +1,31 @@
 import ContinueWatchingRow from "./ContinueWatchingRow";
 import Button from "../common/Button";
-import axios, { TMDB_IMAGE_BASE_URL } from "../../services/tmdb";
-import { cachedGet } from "../../services/tmdbCache";
+import axios from "../../services/tmdb";
 import requests from "../../services/requests";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Skeleton from "../common/Skeleton";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 
 const HeroBanner = ({ fetchUrl }) => {
-  const [movie, setMovie] = useState(null);
-  const [loading, setLoading] = useState(true);
   const handleMovieClick = useMovieNavigation();
-  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
-
-
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      try {
-        const request = await cachedGet(axios, fetchUrl || requests.fetchNetflixOriginals);
-        const results = request.data.results;
-        const randomIndex = Math.floor(Math.random() * results.length);
-        setMovie(results[randomIndex]);
-      } catch (error) {
-        console.error("Banner API Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [fetchUrl]);
+  const { data: movie, isLoading } = useQuery({
+    queryKey: ["banner", fetchUrl],
+    queryFn: async () => {
+      const response = await axios.get(fetchUrl || requests.fetchNetflixOriginals);
+      const results = response.data.results;
+      const randomIndex = Math.floor(Math.random() * results.length);
+      return results[randomIndex];
+    },
+    staleTime: 1000 * 60 * 15, // Banner có thể giữ lâu hơn (15 phút)
+  });
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
   const hasWatched = false;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
         <Skeleton className="w-full h-full rounded-none" />

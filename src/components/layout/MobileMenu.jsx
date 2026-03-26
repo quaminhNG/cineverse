@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { mockAuth } from "../../services/mockAuth";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const MobileMenu = ({ onClose }) => {
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
   const [query, setQuery] = useState("");
-  const location = useLocation();
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -16,13 +15,8 @@ const MobileMenu = ({ onClose }) => {
     }
   };
 
-  useEffect(() => {
-    setUser(mockAuth.getCurrentUser());
-  }, [location]);
-
   const handleLogout = () => {
-    mockAuth.logout();
-    setUser(null);
+    logout();
     onClose();
     navigate("/login");
   };
