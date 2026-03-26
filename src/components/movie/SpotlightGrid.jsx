@@ -1,28 +1,21 @@
-import { useEffect, useState } from "react";
 import axios, { TMDB_IMAGE_BASE_URL, TMDB_IMAGE_W500_URL } from "../../services/tmdb";
-import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 import { FaPlay } from 'react-icons/fa';
+import { useQuery } from "@tanstack/react-query";
 
 const SpotlightGrid = () => {
-    const [movies, setMovies] = useState([]);
     const handleMovieClick = useMovieNavigation();
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await cachedGet(axios, requests.fetchTrending);
-                // Lấy 5 phim đầu tiên
-                setMovies(response.data.results.slice(0, 5));
-            } catch (error) {
-                console.error("Error fetching movies for spotlight:", error);
-            }
-        }
-        fetchData();
-    }, []);
+    const { data: movies, isLoading } = useQuery({
+        queryKey: ["spotlight"],
+        queryFn: async () => {
+            const response = await axios.get(requests.fetchTrending);
+            return response.data.results.slice(0, 5);
+        },
+    });
 
-    if (movies.length < 5) return null;
+    if (isLoading || !movies || movies.length < 5) return null;
 
     const mainMovie = movies[0];
     const subMovies = movies.slice(1, 5);
@@ -36,7 +29,7 @@ const SpotlightGrid = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4">
                 {/* Khung lớn bên trái */}
                 <div
-                    className="lg:col-span-2 relative h-[400px] lg:h-[600px] rounded-2xl overflow-hidden group cursor-pointer shadow-2xl"
+                    className="lg:col-span-2 relative h-[400px] lg:h-[600px] rounded-none overflow-hidden group cursor-pointer shadow-2xl"
                     onClick={() => handleMovieClick(mainMovie)}
                 >
                     <img
@@ -47,7 +40,7 @@ const SpotlightGrid = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-black/40 to-transparent"></div>
 
                     <div className="absolute bottom-0 left-0 p-6 md:p-10 w-full z-20">
-                        <span className="bg-cineverse-main text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-3 inline-block shadow-lg">
+                        <span className="bg-cineverse-main text-black text-xs font-bold px-3 py-1 rounded-none uppercase tracking-widest mb-3 inline-block shadow-lg">
                             #1 Trending
                         </span>
                         <h3 className="text-4xl md:text-5xl font-black text-white mb-3 drop-shadow-md">
@@ -73,7 +66,7 @@ const SpotlightGrid = () => {
                     {subMovies.map((movie) => (
                         <div
                             key={movie.id}
-                            className="relative rounded-2xl overflow-hidden group cursor-pointer shadow-xl"
+                            className="relative rounded-none overflow-hidden group cursor-pointer shadow-xl"
                             onClick={() => handleMovieClick(movie)}
                         >
                             <img

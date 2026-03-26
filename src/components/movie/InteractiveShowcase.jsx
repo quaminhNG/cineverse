@@ -1,39 +1,36 @@
 import { useEffect, useState } from "react";
 import axios, { TMDB_IMAGE_BASE_URL, TMDB_IMAGE_W500_URL } from "../../services/tmdb";
-import { cachedGet } from "../../services/tmdbCache";
 import requests from "../../services/requests";
 import useMovieNavigation from "../../hooks/useMovieNavigation";
 import { FaPlay, FaInfoCircle } from 'react-icons/fa';
+import { useQuery } from "@tanstack/react-query";
 
 const InteractiveShowcase = () => {
-    const [movies, setMovies] = useState([]);
     const [activeMovie, setActiveMovie] = useState(null);
     const handleMovieClick = useMovieNavigation();
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await cachedGet(axios, requests.fetchTrending);
-                const topMovies = response.data.results.slice(0, 6);
-                setMovies(topMovies);
-                if (topMovies.length > 0) {
-                    setActiveMovie(topMovies[0]);
-                }
-            } catch (error) {
-                console.error("Error fetching movies for interactive showcase:", error);
-            }
-        }
-        fetchData();
-    }, []);
+    const { data: movies, isLoading } = useQuery({
+        queryKey: ["interactive-showcase"],
+        queryFn: async () => {
+            const response = await axios.get(requests.fetchTrending);
+            return response.data.results.slice(0, 6);
+        },
+    });
 
-    if (!activeMovie) return null;
+    useEffect(() => {
+        if (movies && movies.length > 0 && !activeMovie) {
+            setActiveMovie(movies[0]);
+        }
+    }, [movies, activeMovie]);
+
+    if (isLoading || !activeMovie) return null;
 
     const truncate = (str, n) => {
         return str?.length > n ? str.substr(0, n - 1) + "..." : str;
     };
 
     return (
-        <div className="relative w-full h-[600px] mb-12 mt-4 rounded-xl overflow-hidden bg-[#141414] flex flex-col md:flex-row group border border-white/10 shadow-2xl">
+        <div className="relative w-full h-[600px] mb-12 mt-4 rounded-none overflow-hidden bg-[#141414] flex flex-col md:flex-row group border border-white/10 shadow-2xl">
             <div className="absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/70 to-transparent z-10" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent z-10" />
@@ -58,7 +55,7 @@ const InteractiveShowcase = () => {
                         {(activeMovie.vote_average * 10).toFixed(0)}% Match
                     </span>
                     <span>{activeMovie.release_date?.substring(0, 4) || activeMovie.first_air_date?.substring(0, 4)}</span>
-                    <span className="border border-gray-400 px-2 py-0.5 rounded text-xs bg-black/30">HD</span>
+                    <span className="border border-gray-400 px-2 py-0.5 rounded-none text-xs bg-black/30">HD</span>
                 </div>
 
                 <p className="text-gray-300 text-base md:text-lg mb-8 line-clamp-3 md:line-clamp-4 leading-relaxed max-w-xl">
@@ -68,14 +65,14 @@ const InteractiveShowcase = () => {
                 <div className="flex gap-4">
                     <button
                         onClick={() => handleMovieClick(activeMovie)}
-                        className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded-lg hover:bg-gray-200 transition-all font-bold group/btn shadow-lg hover:scale-105"
+                        className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded-none hover:bg-gray-200 transition-all font-bold group/btn shadow-lg hover:scale-105"
                     >
                         <FaPlay className="text-xl group-hover/btn:text-cineverse-main transition-colors" />
                         <span>Watch Now</span>
                     </button>
                     <button
                         onClick={() => handleMovieClick(activeMovie)}
-                        className="flex items-center justify-center gap-2 bg-gray-600/50 text-white px-8 py-3 rounded-lg hover:bg-gray-500/70 transition-all font-bold backdrop-blur-md shadow-lg hover:scale-105"
+                        className="flex items-center justify-center gap-2 bg-gray-600/50 text-white px-8 py-3 rounded-none hover:bg-gray-500/70 transition-all font-bold backdrop-blur-md shadow-lg hover:scale-105"
                     >
                         <FaInfoCircle className="text-xl" />
                         <span>More Info</span>
@@ -98,7 +95,7 @@ const InteractiveShowcase = () => {
                                 key={movie.id}
                                 onMouseEnter={() => setActiveMovie(movie)}
                                 onClick={() => handleMovieClick(movie)}
-                                className={`snap-start relative shrink-0 w-32 md:w-40 rounded-xl overflow-hidden cursor-pointer transition-all duration-300 group/item border-2 ${isActive
+                                className={`snap-start relative shrink-0 w-32 md:w-40 rounded-none overflow-hidden cursor-pointer transition-all duration-300 group/item border-2 ${isActive
                                     ? 'border-cineverse-main shadow-[0_0_20px_rgba(95,179,255,0.4)] scale-105'
                                     : 'border-transparent hover:border-white/30'
                                     }`}

@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import YouTube from "react-youtube";
 import axios, { TMDB_IMAGE_W500_URL, TMDB_IMAGE_BASE_URL } from "../services/tmdb";
-import { cachedGet } from "../services/tmdbCache";
 import MovieRow from "../components/movie/MovieRow";
+import { useQuery } from "@tanstack/react-query";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -24,45 +24,40 @@ const Watch = () => {
   const location = useLocation();
   const { movie: stateMovie, trailerId } = location.state || {};
 
-  // ── State ──────────────────────────────────────────────────────────────────
-  const [details, setDetails] = useState(null);
-  const [credits, setCredits] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("episodes");
-  const [relatedUrl, setRelatedUrl] = useState(null);
-
   const isTV = stateMovie?.first_air_date !== undefined ||
     (stateMovie?.name !== undefined && !stateMovie?.title);
   const mediaType = isTV ? "tv" : "movie";
 
-  // ── Fetch chi tiết từ TMDB ─────────────────────────────────────────────────
-  useEffect(() => {
-    if (!stateMovie?.id) { setLoading(false); return; }
-    window.scrollTo(0, 0);
+  // ── Fetch chi tiết từ TMDB sử dụng useQuery ────────────────────────────────
+  const { data: details, isLoading: isDetailsLoading } = useQuery({
+    queryKey: ["details", mediaType, stateMovie?.id],
+    queryFn: async () => {
+      const response = await axios.get(`/${mediaType}/${stateMovie.id}?api_key=${API_KEY}&language=en-US`);
+      return response.data;
+    },
+    enabled: !!stateMovie?.id,
+  });
 
-    async function fetchDetails() {
-      setLoading(true);
-      try {
-        const [detailRes, creditsRes] = await Promise.all([
-          cachedGet(axios, `/${mediaType}/${stateMovie.id}?api_key=${API_KEY}&language=en-US`),
-          cachedGet(axios, `/${mediaType}/${stateMovie.id}/credits?api_key=${API_KEY}&language=en-US`),
-        ]);
-        setDetails(detailRes.data);
-        setCredits(creditsRes.data);
+  const { data: credits, isLoading: isCreditsLoading } = useQuery({
+    queryKey: ["credits", mediaType, stateMovie?.id],
+    queryFn: async () => {
+      const response = await axios.get(`/${mediaType}/${stateMovie.id}/credits?api_key=${API_KEY}&language=en-US`);
+      return response.data;
+    },
+    enabled: !!stateMovie?.id,
+  });
 
-        const firstGenreId = detailRes.data.genres?.[0]?.id;
-        if (firstGenreId) {
-          const type = mediaType === "movie" ? "movie" : "tv";
-          setRelatedUrl(`/discover/${type}?api_key=${API_KEY}&with_genres=${firstGenreId}&language=en-US`);
-        }
-      } catch (err) {
-        console.error("Watch fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
+  const loading = isDetailsLoading || isCreditsLoading;
+  const [activeTab, setActiveTab] = useState("episodes");
+
+  const relatedUrl = useMemo(() => {
+    const firstGenreId = details?.genres?.[0]?.id;
+    if (firstGenreId) {
+      const type = mediaType === "movie" ? "movie" : "tv";
+      return `/discover/${type}?api_key=${API_KEY}&with_genres=${firstGenreId}&language=en-US`;
     }
-    fetchDetails();
-  }, [stateMovie?.id, mediaType]);
+    return null;
+  }, [details, mediaType]);
 
   // ── Data tổng hợp ──────────────────────────────────────────────────────────
   const movie = stateMovie || {};

@@ -1,67 +1,30 @@
-# 🎬 Cineverse - Nền Tảng Xem Phim Trực Tuyến
+# 🎬 Cineverse
 
-Chào mừng đến với **Cineverse**, một ứng dụng web xem phim hiện đại, giao diện đẹp mắt được xây dựng bằng **React**, **Vite** và **Tailwind CSS**. Dự án này mô phỏng trải nghiệm của các nền tảng streaming hàng đầu như Netflix với thiết kế "Dark Mode" sang trọng và hiệu ứng mượt mà.
-## ✨ Tính Năng Nổi Bật
+Dự án này mình xây dựng để rèn luyện kỹ năng React, đặc biệt là cách handle dữ liệu từ TMDB API sao cho mượt và tối ưu. Layout thì mình "mượn" cảm hứng từ Netflix nhưng có tinh chỉnh lại màu sắc Neon Cyan cho nó cá tính hơn.
 
-*   **Trang Chủ (Home)**:
-    *   **Hero Banner**: Banner phim nổi bật với hiệu ứng chuyển động và video nền.
-    *   **Danh Sách Phim**: Các hàng phim theo chủ đề (Trending, Top Rated, Action, Netflix Originals...) có thể trượt ngang.
-    *   **Cineverse Special**: Các mục đặc biệt với hiệu ứng 3D/Hover độc đáo.
-*   **Trải Nghiệm Người Dùng (UX)**:
-    *   **Skeleton Loading**: Hiệu ứng xương (loading placeholder) khi đang tải dữ liệu, tăng trải nghiệm mượt mà.
-    *   **Responsive**: Tương thích hoàn hảo trên cả Desktop, Tablet và Mobile.
-    *   **Animations**: Các hiệu ứng hover, transition, fade-in được chăm chút kỹ lưỡng.
-*   **Chức Năng Tìm Kiếm**: Tìm kiếm phim và chương trình TV theo từ khóa.
-*   **Xem Phim (Watch Page)**: Giao diện xem trailer phim tích hợp YouTube Player.
-*   **Tài Khoản & Cá Nhân Hóa**:
-    *   Đăng ký / Đăng nhập.
-    *   Trang Profile hiển thị thông tin người dùng.
-    *   Hệ thống thông báo (Toast Notifications).
+## 🚀 Tính năng mình đã làm:
+- **Trang chủ**: Banner random, các dãy phim trượt mượt (Trending, To Rated, Action...).
+- **Cơ chế Load cực nhanh**: Sử dụng **TanStack Query (React Query)** để cache dữ liệu, không lo request trùng lặp.
+- **Cuộn vô hạn (Infinite Scroll)**: Trang tìm kiếm cuộn thả ga không cần bấm qua trang mới.
+- **Xem Trailer**: Tích hợp sẵn YouTube Player để xem trailer trực tiếp.
+- **Xác thực (Auth)**: Chạy JWT theo flow thực tế (Access/Refresh Token) dù đang dùng mock dữ liệu.
+- **Performance**: Có Error Boundary để app k bao giờ bị "trắng trang", Lazy loading để tải trang nào nạp trang đó.
 
-## 🛠️ Công Nghệ Sử Dụng
+## 🛠 Công nghệ mình dùng:
+- **Frontend**: React 19, Vite, Tailwind CSS (styling đỉnh cao).
+- **Quản lý dữ liệu**: TanStack Query v5.
+- **Routing**: React Router DOM (có bảo vệ route bằng ProtectedRoute).
+- **API**: TMDB (The Movie Database).
 
-*   **Core**: ReactJS (Vite)
-*   **Styling**: Tailwind CSS (Custom config với màu neon Cyan đặc trưng)
-*   **Routing**: React Router DOM (Lazy loading các trang)
-*   **API**: The Movie Database (TMDB) API
-*   **Icons**: Heroicons
-*   **Khác**: Axios, React Youtube, Movie Trailer
+## 💻 Cách chạy dự án:
+1. Copy repo này về: `git clone ...`
+2. Cài đồ chơi: `npm install`
+3. Tạo file `.env` bỏ API Key của TMDB vào: `VITE_TMDB_API_KEY=your_key`
+4. Lên nhạc: `npm run dev`
 
-## 🚀 Hướng Dẫn Cài Đặt
-
-1.  **Clone dự án về máy:**
-    ```bash
-    git clone https://github.com/your-username/cineverse.git
-    cd cineverse
-    ```
-
-2.  **Cài đặt các gói phụ thuộc (Dependencies):**
-    ```bash
-    npm install
-    ```
-
-3.  **Cấu hình biến môi trường:**
-    *   Tạo file `.env` tại thư mục gốc.
-    *   Thêm API Key của TMDB vào (Nếu chưa có, bạn cần đăng ký tại [themoviedb.org](https://www.themoviedb.org/)):
-    ```env
-    VITE_TMDB_API_KEY=your_api_key_here
-    ```
-
-4.  **Chạy dự án:**
-    ```bash
-    npm run dev
-    ```
-
-## 🔐 Hướng Dẫn Đăng Nhập (Mock Data)
-
-Dự án sử dụng hệ thống xác thực giả lập (Mock Auth) lưu trữ trên `localStorage`. Để trải nghiệm đầy đủ các tính năng như xem Profile, Đăng xuất, bạn có thể sử dụng tài khoản mẫu dưới đây:
-
-### 👤 Tài khoản Admin mặc định:
-*   **Email**: `admin@cineverse.com`
-*   **Password**: `admin123`
-
-### 📝 Hoặc Đăng Ký Mới:
-Bạn cũng có thể tự tạo tài khoản mới bằng cách bấm vào nút **"Sign up for free"** tại màn hình đăng nhập. Dữ liệu sẽ được lưu vào trình duyệt của bạn.
+### � Acc test cho bạn nào lười đăng ký:
+- **Email**: `admin@cineverse.com`
+- **Pass**: `admin123`
 
 ---
-*Được phát triển với ❤️ bởi Đội ngũ Cineverse.*
+*Dự án mang tính chất học tập & rèn luyện!*

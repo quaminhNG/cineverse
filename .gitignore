@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Internal Docs
+Architecture.md
+CV.md
+SCALABILITY_PLAN.md
