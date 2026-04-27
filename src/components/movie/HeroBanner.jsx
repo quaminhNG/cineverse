@@ -51,14 +51,18 @@ const HeroBanner = ({ fetchUrl }) => {
     <div
       className={`relative w-full ${hasWatched ? "h-[700px] md:h-[800px]" : "h-[500px] md:h-[600px]"} overflow-hidden transition-all duration-500 bg-black`}
     >
-      {/* Hero background image - dùng <img> thay vì background-image để browser cache tốt hơn */}
       <img
         src={`https://image.tmdb.org/t/p/w1280/${movie?.backdrop_path}`}
+        srcSet={`
+    https://image.tmdb.org/t/p/w780/${movie?.backdrop_path} 780w,
+    https://image.tmdb.org/t/p/w1280/${movie?.backdrop_path} 1280w
+  `}
+        sizes="(max-width: 768px) 780px, 1280px"
         alt={movie?.title || movie?.name || ""}
         className="absolute inset-0 w-full h-full object-cover object-center animate-fade-in"
         fetchpriority="high"
         loading="eager"
-        decoding="async"
+        decoding="sync"
       />
 
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent" />
